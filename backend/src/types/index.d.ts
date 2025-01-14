@@ -1,9 +1,14 @@
 import { IUser } from '../modules/user/user.model';
 
-declare global {
-  namespace Express {
-    interface Request {
-      user?: IUser;
-    }
+declare namespace Express {
+  export interface Request {
+    user?: { id: string;  email: string };
+    rawBody: any;
   }
 }
+
+// {
+//   id: user._id,
+//   userId: user._id,
+//   email: user.email,
+// }

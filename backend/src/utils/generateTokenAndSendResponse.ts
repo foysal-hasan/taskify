@@ -15,6 +15,8 @@ const generateTokenAndSendResponse = (res: Response, user: IUser) => {
     maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
   });
 
+  
+  user.password = "";
   res.status(200).json({
     user,
     token,

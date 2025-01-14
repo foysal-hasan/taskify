@@ -1,7 +1,7 @@
 import { Schema, model, Document } from 'mongoose';
 import bcrypt from 'bcrypt';
 
-enum Role {
+export enum Role {
   Admin = 'admin',
   Member = 'member',
   Gerente = 'gerente',
@@ -36,37 +36,32 @@ const userSchema = new Schema<IUser>({
   lastName: { type: String, required: true },
   role: { type: String, enum: Object.values(Role), required: true },
   email: { type: String, required: true, unique: true },
-  phoneNumber: { type: String, required: true },
-  address: { type: String, required: true },
-  city: { type: String, required: true },
-  state: { type: String, required: true },
-  country: { type: String, required: true },
-  zipCode: { type: String, required: true },
-  dateOfBirth: { type: Date, required: true },
-  dateOfJoining: { type: Date, required: true },
   password: { type: String, required: true },
-  profilePicture: { type: String, required: false },
-  status: { type: String, required: true },
+  phoneNumber: String,
+  address: String,
+  city: String,
+  state: String,
+  country: String,
+  zipCode: String,
+  dateOfBirth: String,
+  dateOfJoining: String,
+  profilePicture:String,
+  status: String,
+}, {
+  timestamps: true,
 });
 
-// Pre-save hook to hash the password
-userSchema.pre<IUser>('save', async function (next) {
-  if (!this.isModified('password')) {
-    return next();
-  }
-  try {
+userSchema.methods.matchPassword = async function (password:string): Promise<boolean> {
+  return await bcrypt.compare(password, this.password);
+};
+
+userSchema.pre("save", async function (next) {
+  if (this.isModified("password")) {
     const salt = await bcrypt.genSalt(10);
     this.password = await bcrypt.hash(this.password, salt);
-    next();
-  } catch (err: any) {
-    next(err);
   }
+  next();
 });
-
-// Method to check the password
-userSchema.methods.matchPassword = async function (password: string): Promise<boolean> {
-  return bcrypt.compare(password, this.password);
-};
 
 const User = model<IUser>('User', userSchema);
 

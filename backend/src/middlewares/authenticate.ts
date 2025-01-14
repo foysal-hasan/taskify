@@ -1,5 +1,5 @@
 import jwt from 'jsonwebtoken';
-import e, { Request, Response, NextFunction } from 'express';
+import { Request, Response, NextFunction } from 'express';
 import asyncHandler from './asyncHandler';
 import User from '../modules/user/user.model';
 import errors from '../errors/index';
@@ -24,12 +24,13 @@ const authenticate = asyncHandler(async (req: AuthenticatedRequest, res: Respons
     if (!user) {
       throw new errors.UnauthenticatedError('Authentication invalid');
     }
-    // req.user = {
-    //   id: user._id,
-    //   userId: user._id,
-    //   email: user.email,
-    // };
-    req.user = user;
+    req.user = {
+      id: user._id,
+      userId: user._id,
+      email: user.email,
+    };
+    res.locals.user = user;
+    // req.user = user;
     next();
   } catch (err) {
     throw new errors.UnauthenticatedError('Authentication invalid');

@@ -10,18 +10,10 @@ export const registerUser = asyncHandler(async (req: Request, res: Response) => 
     lastName,
     role,
     email,
-    phoneNumber,
-    address,
-    city,
-    state,
-    country,
-    zipCode,
-    dateOfBirth,
-    dateOfJoining,
-    password,
-    profilePicture,
-    status,
+    password
   } = req.body;
+
+  // console.log(req.body);
 
   if (!firstName || !lastName || !role || !password) {
     throw new errors.BadRequestError('Please provide first name, last name, role, and password');
@@ -36,17 +28,8 @@ export const registerUser = asyncHandler(async (req: Request, res: Response) => 
     lastName,
     role,
     email,
-    phoneNumber,
-    address,
-    city,
-    state,
-    country,
-    zipCode,
-    dateOfBirth,
-    dateOfJoining,
-    password,
-    profilePicture,
-    status,
+    password
+
   });
 
   generateTokenAndSendResponse(res, user);
